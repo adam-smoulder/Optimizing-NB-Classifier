@@ -31,17 +31,9 @@ classPriors = zeros(1,length(labs));
 BinThresh = [];
 for n = 1:size(trainCounts,1) %loop through each neuron
 
-    %get all responses for specific neuron
-    cell_n_resps = trainCounts(n,:);
-    cell_n_resps_sorted = sort(cell_n_resps); %sort all responses from training data 
-
-    %get bin thresholds for this cell
-    cell_n_bin_thresh = zeros(1,nBin-1);
-    for b = 1:nBin-1
-        bin = round((length(cell_n_resps_sorted)/nBin)*b);
-        cell_n_bin_thresh(b) = cell_n_resps_sorted(bin);
-    end
-    BinThresh = [BinThresh ; cell_n_bin_thresh];
+    binranges = min(trainCounts(n,:) : round( range(trainCounts(n,:)) / nBin ) : max(trainCounts(n,:); %binsize =  (max-min)/nbin
+    BinThresh = binranges(2:end-1);
+    
 end
 
 %fill in matrix of probabilities of response for each bin
