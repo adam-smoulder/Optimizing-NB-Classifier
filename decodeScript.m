@@ -9,7 +9,7 @@
 % all have been assigned values
 %% load dataset and default variables if needed, isolate needed subset
 if exist('dataset_1', 'var') == 0
-    load('datasetAdam') % this part will probably be changed or removed
+    load('dataset1') % this part will probably be changed or removed
 end
 % dataset_1 dims: neurons x stimuli x trials
 
@@ -22,22 +22,23 @@ if exist('nTrial', 'var') == 0 || nTrial == 0
     nTrial = 22;
 end
 if exist('nFold', 'var') == 0 || nFold == 0 || nFold > nTrial
-    nFold = 0;
+    nFold = 5;
 end
-% if exist('nBin', 'var') == 0 || nNeuron == 0
-%     nBin = 5;
-% end
+if exist('nBin', 'var') == 0 || nNeuron == 0
+    nBin = 3;
+end
 if exist('nPerm', 'var') == 0
-    nPerm = 100;
+    nPerm = 10;
 end
 if exist('decoderType', 'var') == 0
-    decoderType = 'poisson';
+    decoderType = 'binning';
 end
-%% perform decoding
-permutationResult = [];
 
-permutationAccuracy = [];
-for i = 1:nPerm
+%% perform decoding
+
+permutationAccuracy = []; % where decoder results will be stored
+
+for i = 1:nPerm % for each random permutation
     % isolate dataset (randomly pick nNeurons and nTrials from master dataset)
     neuronsRando = randperm(size(dataset_1,1));
     trialsRando = randperm(size(dataset_1,3));
@@ -60,23 +61,23 @@ for i = 1:nPerm
         testLabels = repmat(1:size(test_data,2),1,size(test_data,3)); %vector of labels for data, should be length of stim*trials
         testCounts = reshape(test_data,size(test_data,1),size(test_data,2)*size(test_data,3)); %matrix of responses to each trial, should be #neurons x stim*trials
         
-        % Train the decoder
-        [classMeans, classPriors, classVars] = trainNBDecoder(trainCounts, trainLabels);
-        % Decode the test data
+        % Train decoder and decode using different decoders
         if strcmp(decoderType,'poisson')
+            [classMeans, classPriors] = trainNBDecoder(trainCounts, trainLabels);
             estTestLabels = poissonNBDecode(testCounts, classMeans, classPriors);
         elseif strcmp(decoderType,'gauss')|| strcmp(decoderType,'gaussian')
+            [classMeans, classPriors, classVars] = trainNBDecoder(trainCounts, trainLabels);
             estTestLabels = gaussianNBDecode(testCounts, classMeans, classVars', classPriors);
-        else % binning
-            % insert binning stuff here
-            estTestLabels = zeros(size(testLabels)); % filler atm
+        else 
+            [classPriors, ProbDist, BinThresh] = trainBinningNBDecoder(trainCounts, trainLabels, nBin);
+            estTestLabels = binningNBDecode(testCounts, classPriors, ProbDist, BinThresh);
         end
+
         % Get accuracy
         pAccur = 100*sum(estTestLabels == testLabels)/length(testLabels);
         foldAccuracy = [foldAccuracy pAccur]; %store accuracy for each loop over fold
     end
     permutationAccuracy = [permutationAccuracy; foldAccuracy]; % stack vertically
-    %permutationMeanResult = [permutationResult mean(foldAccuracy)];
     %disp(['Perm ' num2str(i) 'complete']);
 end
 decoderResult = squeeze(mean(permutationAccuracy,1)); % mean of each fold's accuracy
