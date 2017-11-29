@@ -32,7 +32,7 @@ BinThresh = [];
 for n = 1:size(trainCounts,1) %loop through each neuron
 
     binranges = min(trainCounts(n,:) : round( range(trainCounts(n,:)) / nBin ) : max(trainCounts(n,:); %binsize =  (max-min)/nbin
-    BinThresh = binranges(2:end-1);
+    BinThresh(n, :) = binranges(2:end-1);
     
 end
 
