@@ -42,9 +42,8 @@ end
 for stim = 1:length(labs)
     for n = 1:size(trainCounts,1) %for each cell
         % Find indices corresponding to label i
-        labinds_i=find(trainLabels==labs(stim));
+        labinds_i= labs(labs == stim);
         cell_n_stim_resp = trainCounts(n,labinds_i);
-        cell_n_stim_resp_sorted = sort(cell_n_stim_resp);
 
         %get probability for each bin
         for i = 1:nBin
