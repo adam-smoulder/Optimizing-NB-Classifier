@@ -31,7 +31,7 @@ neuronConds = neuronMin : neuronStep : neuronMax;
 trialConds = trialMin : trialStep : trialMax;
 binConds = binMin : binStep : binMax;
 foldConds = [1 5];
-nPerm = 10;
+nPerm = 1;
 
 %% Perform decoding for each condition, output dims: #neurons x #trials x #folds
 tic
