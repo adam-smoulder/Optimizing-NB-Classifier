@@ -69,8 +69,8 @@ for i = 1:nPerm % for each random permutation
             [classMeans, classPriors, classVars] = trainNBDecoder(trainCounts, trainLabels);
             estTestLabels = gaussianNBDecode(testCounts, classMeans, classVars', classPriors);
         else 
-            [classPriors, ProbDist, BinThresh] = trainBinningNBDecoder(trainCounts, trainLabels, nBin);
-            estTestLabels = binningNBDecode(testCounts, classPriors, ProbDist, BinThresh);
+            [classPriors, probDist, binThresh] = trainBinningNBDecoder(trainCounts, trainLabels, nBin);
+            estTestLabels = binningNBDecode(testCounts, classPriors, probDist, binThresh);
         end
 
         % Get accuracy

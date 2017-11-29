@@ -3,7 +3,6 @@
 % The purpose of the script is to wrap the decoder function and run it for every
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
-tic
 
 fileNameToSave = 'poisson_dataset_12stim';
 
@@ -23,9 +22,9 @@ trialMax = 50;		% maximum number of trials
 trialStep = 10; % FAKE VAL FOR TEST
 
 binMin = 2;         % minimum number of bins
-binMax = 10;		% maximum number of bins
+binMax = 22;		% maximum number of bins
 %binStep = 1;		% difference between input bins quantities
-binStep = 5; % FAKE VAL FOR TEST
+binStep = 4; % FAKE VAL FOR TEST
 
 % establish vectors for differing conditions
 neuronConds = neuronMin : neuronStep : neuronMax;
@@ -35,6 +34,8 @@ foldConds = [1 5];
 nPerm = 10;
 
 %% Perform decoding for each condition, output dims: #neurons x #trials x #folds
+tic
+
 % poisson decoder, with and without cross-val
 decoderOutputPoisson = nan(length(neuronConds), length(trialConds));
 decoderOutputPoissonCV = nan(length(neuronConds), length(trialConds), foldConds(2));
@@ -114,12 +115,13 @@ for ii = 1:length(neuronConds)
              decodeScript % perform decoding!
              decoderOutputBinsCV(ii,jj,ll,:) = decoderResult;
              decoderStdevBinsCV(ii,jj,ll,:) = decoderStdev;
+             % comment this out for long runs...
+             disp(['bins n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
+                 num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
+                 ', stdev: ' num2str(decoderStdev)]);
          end
          
-         % comment this out for long runs...
-         disp(['bins n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
-             num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
-             ', stdev: ' num2str(decoderStdev)]);
+         disp(['completed n = ' num2str(neuronConds(ii)) ' t = ' num2str(trialConds(jj))])
     end
 end
 
