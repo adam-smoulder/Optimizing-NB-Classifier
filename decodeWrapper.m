@@ -145,7 +145,8 @@ save(fileNameToSave,'neuronConds','trialConds','foldConds','binConds',...
     'decoderStdevGauss','decoderStdevGaussCV','decoderOutputBins',...
     'decoderOutputBinsCV','decoderStdevBins','decoderStdevBinsCV');
 
-% %% old bs testing stuff
+
+%% old bs testing stuff
 % figure
 % trialNum = 5;
 % foldNum = 1;
