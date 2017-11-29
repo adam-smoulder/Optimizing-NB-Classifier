@@ -57,14 +57,12 @@ for stim = 1:length(labs)
         %get probability for each bin
         for i = 1:nBin
             if i == 1
-                numbers = find(cell_n_stim_resp_sorted<=BinThresh(n,i));%for the first bin, just find everything below the first bin thresh
+                numbers = cell_n_stim_resp_sorted(cell_n_stim_resp_sorted<=BinThresh(n,i));%for the first bin, just find everything below the first bin thresh
             elseif i == nBin
-                numbers = find(cell_n_stim_resp_sorted>BinThresh(n,i-1));%for the last bin, just find everything after the last bin tresh
+                numbers = cell_n_stim_resp_sorted(cell_n_stim_resp_sorted>BinThresh(n,i-1));%for the last bin, just find everything after the last bin tresh
             else
-                numbers = find(cell_n_stim_resp_sorted>BinThresh(n,i-1) & cell_n_stim_resp_sorted<=BinThresh(n,i));%for the rest of nBin, find between that bin thresh and the next
+                numbers = cell_n_stim_resp_sorted([cell_n_stim_resp_sorted>BinThresh(n,i-1) & cell_n_stim_resp_sorted<=BinThresh(n,i)]);%for the rest of nBin, find between that bin thresh and the next
             end
-            cell_N_prob = length(numbers)/length(cell_n_stim_resp);%calc probability for that bin
-            ProbDist{1,stim}{n,i} = cell_N_prob;
         end
     end
     %get class priors
