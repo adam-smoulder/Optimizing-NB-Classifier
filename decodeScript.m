@@ -1,5 +1,5 @@
 % Team LAMP, Neural Data Analysis
-% Last Updated: 11/27/17
+% Last Updated: 11/29/17
 % The purpose of this script is to take a specified number of neurons,
 % folds, and trials and output a decoder accuracy. This is being
 % implemented as a script to avoid reloading a possibly large dataset into

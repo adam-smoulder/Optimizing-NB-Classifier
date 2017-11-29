@@ -1,5 +1,5 @@
 % Team LAMP, Neural Data Analysis
-% Last Updated: 11/28/17
+% Last Updated: 11/29/17
 % The purpose of the script is to wrap the decoder function and run it for every
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
