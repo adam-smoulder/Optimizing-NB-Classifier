@@ -11,20 +11,20 @@ fileNameToSave = 'poisson_dataset_12stim_asdf';
 % declare conditions the decoder will be used for
 
 neuronMin = 1;		% minimum number of neurons
-%neuronMax = 100;     % maximum number of neurons
-neuronMax = 31; % FAKE VAL FOR TEST
-%neuronStep = 1;     % difference between input neuron quantities
-neuronStep = 5; % FAKE VAL FOR TEST
+neuronMax = 100;     % maximum number of neurons
+%neuronMax = 31; % FAKE VAL FOR TEST
+neuronStep = 1;     % difference between input neuron quantities
+%neuronStep = 5; % FAKE VAL FOR TEST
 
 trialMin = 5;		% minimum number of trials (per stimulus)
 trialMax = 50;		% maximum number of trials
-%trialStep = 1;		% difference between input trial quantities
-trialStep = 10; % FAKE VAL FOR TEST
+trialStep = 1;		% difference between input trial quantities
+%trialStep = 10; % FAKE VAL FOR TEST
 
 binMin = 2;         % minimum number of bins
-binMax = 22;		% maximum number of bins
-%binStep = 1;		% difference between input bins quantities
-binStep = 4; % FAKE VAL FOR TEST
+binMax = 10;		% maximum number of bins
+binStep = 1;		% difference between input bins quantities
+%binStep = 4; % FAKE VAL FOR TEST
 
 % establish vectors for differing conditions
 neuronConds = neuronMin : neuronStep : neuronMax;
