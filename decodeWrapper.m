@@ -4,7 +4,7 @@
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
 
-fileNameToSave = 'poisson_dataset_12stim';
+fileNameToSave = 'poisson_dataset_12stim_asdf';
 
 % ENSURE THAT OUTPUT DIRECTORY IS PREPARED FOR SAVING DATA IF NEEDED
 %% Variable declaration
@@ -30,29 +30,23 @@ binStep = 4; % FAKE VAL FOR TEST
 neuronConds = neuronMin : neuronStep : neuronMax;
 trialConds = trialMin : trialStep : trialMax;
 binConds = binMin : binStep : binMax;
-foldConds = [1 5];
 nPerm = 1;
+nFold = 5;
 
 %% Perform decoding for each condition, output dims: #neurons x #trials x #folds
 tic
 
 % poisson decoder, with and without cross-val
-decoderOutputPoisson = nan(length(neuronConds), length(trialConds));
-decoderOutputPoissonCV = nan(length(neuronConds), length(trialConds), foldConds(2));
+decoderOutputPoisson = nan(length(neuronConds), length(trialConds), nFold);
 decoderStdevPoisson = nan(length(neuronConds), length(trialConds));
-decoderStdevPoissonCV = nan(length(neuronConds), length(trialConds), foldConds(2));
 
 % gaussian decoder, with and without cross-val
-decoderOutputGauss = nan(length(neuronConds), length(trialConds));
-decoderOutputGaussCV = nan(length(neuronConds), length(trialConds), foldConds(2));
+decoderOutputGauss = nan(length(neuronConds), length(trialConds), nFold);
 decoderStdevGauss = nan(length(neuronConds), length(trialConds));
-decoderStdevGaussCV = nan(length(neuronConds), length(trialConds), foldConds(2));
 
 % binned decoding, with and without cross-val
-decoderOutputBins = nan(length(neuronConds), length(trialConds), length(binConds));
-decoderOutputBinsCV = nan(length(neuronConds), length(trialConds), length(binConds), foldConds(2));
-decoderStdevBins = nan(length(neuronConds), length(trialConds),length(binConds));
-decoderStdevBinsCV = nan(length(neuronConds), length(trialConds), length(binConds), foldConds(2));
+decoderOutputBins = nan(length(neuronConds), length(trialConds), length(binConds), nFold);
+decoderStdevBins = nan(length(neuronConds), length(trialConds), length(binConds));
 
 for ii = 1:length(neuronConds)
     for jj = 1:length(trialConds)
@@ -64,23 +58,15 @@ for ii = 1:length(neuronConds)
         nNeuron = neuronConds(ii);
         nTrial = trialConds(jj);
         
-        %if floor(nTrial/nFold) < 2 % not enough test trials!
         %WE ARE ASSUMING THAT THE MINIMUM TRIAL#/FOLD# is 1!!
-        
         
          % run each type of decoder
          
          % poisson
          decoderType = 'poisson';
-         nFold = 1; % don't cross validate
          decodeScript % perform decoding!
-         decoderOutputPoisson(ii,jj) = decoderResult;
+         decoderOutputPoisson(ii,jj,:) = decoderResult;
          decoderStdevPoisson(ii,jj) = decoderStdev;
-         
-         nFold = foldConds(2); % cross validate
-         decodeScript % perform decoding!
-         decoderOutputPoissonCV(ii,jj,:) = decoderResult;
-         decoderStdevPoissonCV(ii,jj,:) = decoderStdev;
          
          % comment this out for long runs...
          disp(['poisson n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
@@ -89,15 +75,9 @@ for ii = 1:length(neuronConds)
          
          % gaussian
          decoderType = 'gaussian';
-         nFold = 1; % don't cross validate
          decodeScript % perform decoding!
-         decoderOutputGauss(ii,jj) = decoderResult;
+         decoderOutputGauss(ii,jj,:) = decoderResult;
          decoderStdevGauss(ii,jj) = decoderStdev;
-         
-         nFold = foldConds(2); % cross validate
-         decodeScript % perform decoding!
-         decoderOutputGaussCV(ii,jj,:) = decoderResult;
-         decoderStdevGaussCV(ii,jj,:) = decoderStdev;
 
          % comment this out for long runs...
          disp(['gauss n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
@@ -107,14 +87,9 @@ for ii = 1:length(neuronConds)
          decoderType = 'bins';
          for ll = 1:length(binConds)
              nBins = binConds(ll); % for a given number of bins
-             nFold = 1; % don't cross validate
              decodeScript % perform decoding!
-             decoderOutputBins(ii,jj,ll) = decoderResult;
+             decoderOutputBins(ii,jj,ll,:) = decoderResult;
              decoderStdevBins(ii,jj,ll) = decoderStdev;
-             nFold = foldConds(2); % cross validate
-             decodeScript % perform decoding!
-             decoderOutputBinsCV(ii,jj,ll,:) = decoderResult;
-             decoderStdevBinsCV(ii,jj,ll,:) = decoderStdev;
              % comment this out for long runs...
              disp(['bins n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
                  num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
@@ -128,10 +103,10 @@ end
 toc
 
 % check how the folds improved accuracy!
-averagePoissonFoldOutput = mean(decoderOutputPoissonCV,3);
-averageGaussFoldOutput = mean(decoderOutputGaussCV,3);
-diffPoisson = averagePoissonFoldOutput-decoderOutputPoisson;
-diffGauss = averageGaussFoldOutput - decoderOutputGauss;
+averagePoissonFoldOutput = mean(decoderOutputPoisson,3);
+averageGaussFoldOutput = mean(decoderOutputGauss,3);
+diffPoisson = averagePoissonFoldOutput-squeeze(decoderOutputPoisson(:,:,1));
+diffGauss = averageGaussFoldOutput - squeeze(decoderOutputGauss(:,:,1));
 
 avgDiffPoisson = mean(mean(diffPoisson));
 avgDiffGauss = mean(mean(diffGauss));
@@ -141,12 +116,9 @@ disp(['Poisson: ' num2str(avgDiffPoisson) '%'])
 disp(['Gauss: ' num2str(avgDiffGauss) '%'])
 
 %% if desired, save the output
-save(fileNameToSave,'neuronConds','trialConds','foldConds','binConds',...
-    'decoderOutputPoisson','decoderOutputPoissonCV','decoderStdevPoisson',...
-    'decoderStdevPoissonCV', 'decoderOutputGauss','decoderOutputGaussCV',...
-    'decoderStdevGauss','decoderStdevGaussCV','decoderOutputBins',...
-    'decoderOutputBinsCV','decoderStdevBins','decoderStdevBinsCV');
-
+save(fileNameToSave,'neuronConds','trialConds','binConds','nFold',...
+    'decoderOutputPoisson','decoderStdevPoisson','decoderOutputGauss',...
+    'decoderStdevGauss','decoderOutputBins','decoderStdevBins');
 
 %% old bs testing stuff
 % figure
