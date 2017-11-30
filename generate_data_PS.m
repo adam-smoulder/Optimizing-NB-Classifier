@@ -1,8 +1,11 @@
-%% properties of data 1
+% NOTE THIS IS OUTDATED!!! The variance for the gaussian currently is still
+% set to it's mean! Please update this with whatever is relevant!
+%
+%% properties of data 
 total_stim = 12; 
 total_trials = 50;
 total_neurons = 100;
-dist = 'gauss'; %%%%%%%%%% ENTER 'gauss' OR 'poisson'
+dist = '3rd'; %%%%%%%%%% ENTER 'gauss' OR 'poisson' OR '3rd'
 
 %generate lmbdas from gauss distribution (so have gaussian tuning curves)
 max_mean_FR = 30; %max mean firing rate of all cells will be 30
@@ -18,7 +21,6 @@ end
 gauss = gauss./max(gauss); %normalize so can multiply by the mean max firing rate
 lambda_values = round(gauss.*max_mean_FR,2); %multiply by our mean max FR
 lambda_values_repeated = repmat(lambda_values,1,2); %matrix to make it easier to shift tuning curve
-
 %% generate spikes for each neuron, each stim, each trial
 dataset_1 = zeros(total_neurons,total_stim,total_trials);
 for n = 1:total_neurons
@@ -30,19 +32,38 @@ for n = 1:total_neurons
             if strcmp(dist,'poisson')
                 dataset_1(n,s,t) = poissrnd(s_lambda); %get FR from Poisson
             elseif strcmp(dist,'gauss')
-                sigma = s_lambda;
+                sigma = s_lambda/4;
                 dataset_1(n,s,t) = normrnd(s_lambda,sigma); %get response from Gauss
+            elseif strcmp(dist,'3rd')
+                % select randomly between the two dists, meaning -10 or not
+                if mod(t,2)
+                    s_lambda_forTrial = s_lambda-10;
+                else
+                    s_lambda_forTrial = s_lambda;
+                end
+                % set variances
+                sigma = 2; % randomly selected atm
+                % select from gaussian
+                dataset_1(n,s,t) = normrnd(s_lambda_forTrial,sigma); %get response from Gauss
             else
                 error('no distribution chosen');
             end
         end
     end
 end
-%% test = squeeze(dataset_1(1,:,:));
-%save stuff
+% test = squeeze(dataset_1(1,:,:));
+% test for 3rd dist: should look bimodal. run this a buncha times and check
+% em out
+% close all
+% histogram(dataset_1(randi(100),randi(12),:),30)
+
+%% save stuff
 if strcmp(dist,'poisson')
-    save('dataset1.mat','dataset_1','lambda_values','dist','max_mean_FR','gauss_var','total_neurons','total_trials','total_stim');
+    save('dataset1.mat','dataset_1','lambda_values','dist','max_mean_FR','gauss','total_neurons','total_trials','total_stim');
 elseif strcmp(dist,'gauss')
     dataset_2 = dataset_1;
-    save('datasetGauss.mat','dataset_2','lambda_values','dist','max_mean_FR','gauss_var','sigma','total_neurons','total_trials','total_stim');
+    save('datasetGauss.mat','dataset_2','lambda_values','dist','max_mean_FR','gauss','sigma','total_neurons','total_trials','total_stim');
+elseif strcmp(dist,'3rd')
+    dataset_3 = dataset_1;
+    save('dataset3.mat','dataset_3','lambda_values','dist','max_mean_FR','gauss_mean','gauss_std','sigma','total_neurons','total_trials','total_stim');
 end
