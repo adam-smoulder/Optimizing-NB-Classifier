@@ -25,14 +25,14 @@ function estLabels = gaussianNBDecode(testCounts, classMeans, classVars, classPr
 % dimensions: 
 % classMeans = stim x neurons
 % classVars = stim x neurons
-% testCounts = neurons x trials
+% testCounts = neurons x trialsTotal (so nTrial * 12)
 
 ntrials=size(testCounts,2);
 PPC = zeros(size(classMeans,1), ntrials); % stim x trials
 for i = 1:size(classMeans,1) % for each stimulus
     cM = classMeans(i,:)'; % mean firing rates for each neuron
     CM = repmat(cM,[1,ntrials]); % ^repeated so it's neuron x trial
-    cV = classVars(i,:)'; % variance of FR for each neuron
+    cV = classVars(:,i); % variance of FR for each neuron
     CV = repmat(cV,[1,ntrials]);
     %LLC = sum(testCounts.*log(CM)-CM); % log likelihood
     LLC = sum(-log(sqrt(CV)*sqrt(2*pi))...

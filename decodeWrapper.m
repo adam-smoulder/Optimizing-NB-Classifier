@@ -4,27 +4,27 @@
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
 
-fileNameToSave = 'poisson_dataset_12stim_asdf';
+fileNameToSave = '3rd_dataset_12stim_abridged';
 
 % ENSURE THAT OUTPUT DIRECTORY IS PREPARED FOR SAVING DATA IF NEEDED
 %% Variable declaration
 % declare conditions the decoder will be used for
 
 neuronMin = 1;		% minimum number of neurons
-neuronMax = 100;     % maximum number of neurons
-%neuronMax = 31; % FAKE VAL FOR TEST
-neuronStep = 1;     % difference between input neuron quantities
-%neuronStep = 5; % FAKE VAL FOR TEST
+%neuronMax = 100;     % maximum number of neurons
+neuronMax = 31; % FAKE VAL FOR TEST
+%neuronStep = 1;     % difference between input neuron quantities
+neuronStep = 5; % FAKE VAL FOR TEST
 
 trialMin = 5;		% minimum number of trials (per stimulus)
 trialMax = 50;		% maximum number of trials
-trialStep = 1;		% difference between input trial quantities
-%trialStep = 10; % FAKE VAL FOR TEST
+%trialStep = 1;		% difference between input trial quantities
+trialStep = 10; % FAKE VAL FOR TEST
 
 binMin = 2;         % minimum number of bins
 binMax = 10;		% maximum number of bins
-binStep = 1;		% difference between input bins quantities
-%binStep = 4; % FAKE VAL FOR TEST
+%binStep = 1;		% difference between input bins quantities
+binStep = 2; % FAKE VAL FOR TEST
 
 % establish vectors for differing conditions
 neuronConds = neuronMin : neuronStep : neuronMax;

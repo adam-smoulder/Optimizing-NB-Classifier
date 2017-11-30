@@ -28,7 +28,7 @@ if exist('nBin', 'var') == 0 || nNeuron == 0
     nBin = 3;
 end
 if exist('nPerm', 'var') == 0
-    nPerm = 10;
+    nPerm = 1;
 end
 if exist('decoderType', 'var') == 0
     decoderType = 'binning';
@@ -63,10 +63,10 @@ for i = 1:nPerm % for each random permutation
         
         % Train decoder and decode using different decoders
         if strcmp(decoderType,'poisson')
-            [classMeans, classPriors] = trainNBDecoder(trainCounts, trainLabels);
+            [classMeans, ~, classPriors] = trainNBDecoder(trainCounts, trainLabels);
             estTestLabels = poissonNBDecode(testCounts, classMeans, classPriors);
         elseif strcmp(decoderType,'gauss')|| strcmp(decoderType,'gaussian')
-            [classMeans, classPriors, classVars] = trainNBDecoder(trainCounts, trainLabels);
+            [classMeans, classVars, classPriors] = trainNBDecoder(trainCounts, trainLabels);
             estTestLabels = gaussianNBDecode(testCounts, classMeans, classVars', classPriors);
         else 
             [classPriors, probDist, binThresh] = trainBinningNBDecoder(trainCounts, trainLabels, nBin);
