@@ -4,7 +4,7 @@
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
 
-fileNameToSave = 'poisson_dataset_12stim_asdf';
+fileNameToSave = 'gauss_dataset2_12stim';
 
 % ENSURE THAT OUTPUT DIRECTORY IS PREPARED FOR SAVING DATA IF NEEDED
 %% Variable declaration
