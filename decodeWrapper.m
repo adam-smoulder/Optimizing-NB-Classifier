@@ -4,27 +4,27 @@
 % permutation of conditions (# of neurons, # of trials, # of folds, if time permits,
 % # of bins).
 
-fileNameToSave = '3rd_dataset_12stim_abridged';
+fileNameToSave = 'poisson_dataset_12stim_asdf';
 
 % ENSURE THAT OUTPUT DIRECTORY IS PREPARED FOR SAVING DATA IF NEEDED
 %% Variable declaration
 % declare conditions the decoder will be used for
 
 neuronMin = 1;		% minimum number of neurons
-%neuronMax = 100;     % maximum number of neurons
-neuronMax = 31; % FAKE VAL FOR TEST
-%neuronStep = 1;     % difference between input neuron quantities
-neuronStep = 5; % FAKE VAL FOR TEST
+neuronMax = 100;     % maximum number of neurons
+%neuronMax = 31; % FAKE VAL FOR TEST
+neuronStep = 1;     % difference between input neuron quantities
+%neuronStep = 5; % FAKE VAL FOR TEST
 
 trialMin = 5;		% minimum number of trials (per stimulus)
 trialMax = 50;		% maximum number of trials
-%trialStep = 1;		% difference between input trial quantities
-trialStep = 10; % FAKE VAL FOR TEST
+trialStep = 1;		% difference between input trial quantities
+%trialStep = 10; % FAKE VAL FOR TEST
 
 binMin = 2;         % minimum number of bins
 binMax = 10;		% maximum number of bins
-%binStep = 1;		% difference between input bins quantities
-binStep = 2; % FAKE VAL FOR TEST
+binStep = 1;		% difference between input bins quantities
+%binStep = 4; % FAKE VAL FOR TEST
 
 % establish vectors for differing conditions
 neuronConds = neuronMin : neuronStep : neuronMax;
@@ -48,15 +48,15 @@ decoderStdevGauss = nan(length(neuronConds), length(trialConds));
 decoderOutputBins = nan(length(neuronConds), length(trialConds), length(binConds), nFold);
 decoderStdevBins = nan(length(neuronConds), length(trialConds), length(binConds));
 
-for ii = 1:length(neuronConds)
-    for jj = 1:length(trialConds)
+for ii = neuronMin:neuronStep:neuronMax
+    for jj = trialMin:trialStep:trialMax
         clear pAccur nNeuron nTrial nFold dataToUse accuracy set_size ...
             test_data train_data testLabels trainLabels classMeans classPriors ...
             estTestLabels trainCounts testCounts data_logical_vector permutationResult
         
         % get current loops # neurons and trials
-        nNeuron = neuronConds(ii);
-        nTrial = trialConds(jj);
+        nNeuron = ii;
+        nTrial = jj;
         
         %WE ARE ASSUMING THAT THE MINIMUM TRIAL#/FOLD# is 1!!
         
@@ -70,8 +70,8 @@ for ii = 1:length(neuronConds)
          
          % comment this out for long runs...
          disp(['poisson n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
-             num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
-             ', stdev: ' num2str(decoderStdev)]);
+             num2str(nFold) ' - accuracy: ' num2str(round(decoderResult)) '%'...
+             ', stdev: ' num2str(round(decoderStdev))]);
          
          % gaussian
          decoderType = 'gaussian';
@@ -80,23 +80,23 @@ for ii = 1:length(neuronConds)
          decoderStdevGauss(ii,jj) = decoderStdev;
 
          % comment this out for long runs...
-         disp(['gauss n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
-             num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
-             ', stdev: ' num2str(decoderStdev)]);
+         disp(['gauss n=' num2str(nNeuron), ' t=' round(num2str(nTrial)) ' f=' ...
+             num2str(nFold) ' - accuracy: ' num2str(round(decoderResult)) '%'...
+             ', stdev: ' num2str(round(decoderStdev))]);
          
          decoderType = 'bins';
          for ll = 1:length(binConds)
-             nBins = binConds(ll); % for a given number of bins
+             nBin = binConds(ll); % for a given number of bins
              decodeScript % perform decoding!
              decoderOutputBins(ii,jj,ll,:) = decoderResult;
              decoderStdevBins(ii,jj,ll) = decoderStdev;
              % comment this out for long runs...
-             disp(['bins n=' num2str(nNeuron), ' t=' num2str(nTrial) ' f=' ...
-                 num2str(nFold) ' - accuracy: ' num2str(decoderResult) '%'...
-                 ', stdev: ' num2str(decoderStdev)]);
+             disp(['bins n=' round(num2str(nNeuron)), ' t=' round(num2str(nTrial)) ' f=' ...
+                 round(num2str(nFold)) ' - accuracy: ' num2str(round(decoderResult)) '%'...
+                 ', stdev: ' num2str(round(decoderStdev))]);
          end
          
-         disp(['completed n = ' num2str(neuronConds(ii)) ' t = ' num2str(trialConds(jj))])
+         disp(['completed n = ' num2str(ii) ' t = ' num2str(jj)])
     end
 end
 
@@ -112,8 +112,8 @@ avgDiffPoisson = mean(mean(diffPoisson));
 avgDiffGauss = mean(mean(diffGauss));
 
 disp('Average improvements from folding:')
-disp(['Poisson: ' num2str(avgDiffPoisson) '%'])
-disp(['Gauss: ' num2str(avgDiffGauss) '%'])
+disp(['Poisson: ' round(num2str(avgDiffPoisson)) '%'])
+disp(['Gauss: ' round(num2str(avgDiffGauss)) '%'])
 
 %% if desired, save the output
 save(fileNameToSave,'neuronConds','trialConds','binConds','nFold',...
