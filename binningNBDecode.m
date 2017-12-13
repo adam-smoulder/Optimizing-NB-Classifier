@@ -1,9 +1,13 @@
+% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Neural Data Analysis
+% Last Updated: 12/12/17
+
 %Naive Bayes decoder using binning thresholds 
 
 function estLabels = binningNBDecode(testCounts, classPriors, probDist, binThresh)
 
 
-ntrials=size(testCounts,2);
+ntrials=size(testCounts,2); %total number of trials
 PPC = zeros(length(probDist), ntrials); % stim x trials
 for trial = 1:ntrials %for each test trial
     trial_responses = testCounts(:,trial); %get all cell responses for that trial
@@ -16,15 +20,14 @@ for trial = 1:ntrials %for each test trial
         N_bin = find(N_thresh_resp_sort==N_resp,1);     %find location of that response within thresholds, which gives the bin
         N_bin_all(n,1)= N_bin;                          %store bin 
     end
+    %
     for stim = 1:length(probDist)
-        probabilities = probDist{stim}; %get probabilities for this stim
-        bin_probabilities = diag(cell2mat(probabilities(:,N_bin_all))); %get probabilities for each bin
-        LLC = sum(log(bin_probabilities)); %log likelihood
-        PPC(stim,trial) = LLC+log(classPriors(stim));
+        probabilities = probDist{stim};                                       %get probabilities for this stim
+        bin_probabilities = diag(cell2mat(probabilities(:,N_bin_all)))+0.001; %get probabilities for each bin, add .001 to avoid log(0)
+        LLC = sum(log(bin_probabilities));                                    %log likelihood
+        PPC(stim,trial) = LLC+log(classPriors(stim));                         %add prior
     end
 end
-[maxes, estLabels] = max(PPC);
-randvec = randi(size(PPC,1),size(PPC,2)); %get matrix of random integers (1:12) for each trial
-estLabels(maxes==-inf) = randvec(maxes==-inf); %if a max was -inf, have it take a guess at which stim it was
+[maxes, estLabels] = max(PPC); %get estimate labels
 
 end
