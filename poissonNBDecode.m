@@ -1,3 +1,9 @@
+% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Neural Data Analysis
+% Last Updated: 12/12/17
+
+% Adapted from function written by Lindsay Bahureksa and Dr. Steve Chase
+
 % This is a function to estimate class labels based only on count data
 % using a Poisson Naive Bayes decoder. 
 %
@@ -24,6 +30,7 @@
 function estLabels = poissonNBDecode(testCounts, classMeans, classPriors)
 % dimensions: 
 % classMeans = stim x neurons
+% classPriors = 1 x stim
 % testCounts = neurons x trials
 
 if min(min(classMeans <= 0))
@@ -34,11 +41,11 @@ ntrials=size(testCounts,2);
 PPC = zeros(size(classMeans,1), ntrials); % stim x trials
 for i = 1:size(classMeans,1) % for each stimulus
     cM = classMeans(i,:)'; % mean firing rates for each neuron
-    CM = repmat(cM,[1,ntrials]); % ^repeated so it's neuron x trial
+    CM = repmat(cM,[1,ntrials]); % ^repeated so cM is neuron x trial
     LLC = sum(testCounts.*log(CM)-CM); % log likelihood
     PPC(i,:) = LLC + log(classPriors(i)); % incorporate AP info
 end
 
-[~, estLabels] = max(PPC);
+[~, estLabels] = max(PPC); % set estimated test labels
 
 end

@@ -1,5 +1,11 @@
-% This is a function to learn the needed parameters for a two class 
-% Naive Bayes decoder. 
+% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Neural Data Analysis
+% Last Updated: 12/12/17
+
+% Adapted from function written by Lindsay Bahureksa and Dr. Steve Chase
+
+% This is a function to learn the needed parameters for a Naive Bayes
+% decoder under the assumption of a Gaussian or Poisson distribution
 %
 % Usage: [classMeans, classVars, classPriors] = trainPoissonNBDecoder(trainCounts, trainLabels)
 %
@@ -25,7 +31,7 @@
 function [classMeans, classVars, classPriors] = trainNBDecoder(trainCounts, trainLabels)
 
 % Works for any number of classes
-labs=unique(trainLabels);
+labs=unique(trainLabels); % number of classes/labels
 classMeans = zeros(length(labs), size(trainCounts,1));
 classVars = zeros(length(labs), size(trainCounts,1));
 classPriors = zeros(1,length(labs));
