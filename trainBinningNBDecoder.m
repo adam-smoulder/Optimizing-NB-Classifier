@@ -1,31 +1,13 @@
-% This is a function to learn the needed parameters for a two class 
-% Naive Bayes decoder. 
-%
-% Usage: [classMeans, classPriors] = trainPoissonNBDecoder(trainCounts, trainLabels)
-%
-% Inputs: 
-%
-%   trainCounts - a matrix of spike counts, where each column is a trial
-%   and each row is a neuron. 
-%
-%   trainLabels - a vector of labels for each trial (column) in
-%   trainCounts. 
-%
-% Outputs: 
-%
-%   classMeans - a matrix, where the first column gives the mean counts for
-%   class 1 and the second column gives the mean counts for class 2. 
-%
-%   classPriors - a vector where the first entry gives the prior
-%   probability for class 1 and the second entry gives the prior
-%   probability for class 2. 
-%
+% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Neural Data Analysis
+% Last Updated: 12/12/17
+
+% This is a function to train the binning Naive Bayes decoder. 
+
 function [classPriors, probDist, binThresh] = trainBinningNBDecoder(trainCounts, trainLabels, nBin)
 
-
-% Works for any number of classes
-labs=unique(trainLabels);
-classPriors = zeros(1,length(labs));
+labs=unique(trainLabels); %get number of stimuli
+classPriors = zeros(1,length(labs)); %create matrix to store priors for each stimulus
 
 %first need to get thresholds
 binThresh = [];
@@ -36,10 +18,10 @@ for n = 1:size(trainCounts,1) %loop through each neuron
     cell_n_resps_sorted = sort(cell_n_resps); %sort all responses from training data 
 
     %get bin thresholds for this cell
-    cell_n_bin_thresh = zeros(1,nBin-1);
-    for b = 1:nBin-1
-        bin = round((length(cell_n_resps_sorted)/nBin)*b);
-        cell_n_bin_thresh(b) = cell_n_resps_sorted(bin);
+    cell_n_bin_thresh = zeros(1,nBin-1);                    %will have bins-1 thresholds
+    for b = 1:nBin-1                                        %for each threshold
+        bin = round((length(cell_n_resps_sorted)/nBin)*b);  %get what that that threshold will be based on keeping the total number 
+        cell_n_bin_thresh(b) = cell_n_resps_sorted(bin);    %of responses from all training data even between the bins
     end
     binThresh = [binThresh ; cell_n_bin_thresh];
 end
