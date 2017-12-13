@@ -27,7 +27,7 @@ function estLabels = poissonNBDecode(testCounts, classMeans, classPriors)
 % testCounts = neurons x trials
 
 if min(min(classMeans <= 0))
-    classMeans = classMeans+min(min(classMeans))+.001; % hack to avoid log(<=0) -> fail
+    classMeans = classMeans-min(min(classMeans))+.001; % hack to avoid log(<=0) -> fail
 end
 
 ntrials=size(testCounts,2);
