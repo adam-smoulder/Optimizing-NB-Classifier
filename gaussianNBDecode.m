@@ -1,3 +1,9 @@
+% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Neural Data Analysis
+% Last Updated: 12/12/17
+
+% Adapted from function written by Lindsay Bahureksa and Dr. Steve Chase
+
 % This is a function to estimate class labels based only on count data
 % using a Gaussian Naive Bayes decoder. 
 %
