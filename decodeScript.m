@@ -1,4 +1,4 @@
-% Lavanya Krishna, Michael Shetyn, Adam Smoulder, Pati Stan
+% Lavanya Krishna, Michael Shteyn, Adam Smoulder, Pati Stan
 % Neural Data Analysis
 % Last Updated: 12/12/17
 
