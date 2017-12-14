@@ -6,7 +6,7 @@
 total_stim = 12; 
 total_trials = 50;
 total_neurons = 100;
-dist = 'poisson'; %%%%%%%%%%%%%%%%%%%%% ENTER 'gauss' OR 'poisson' OR 'binomial' %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+dist = 'poisson'; %%%%%%%%%%%%%%%%%%%%% ENTER 'gauss' OR 'poisson' OR 'bimodal' %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %generate lmbdas from gauss distribution (so have gaussian tuning curves)
 max_mean_FR = 30;       %max mean firing rate of all cells will be 30
@@ -39,12 +39,12 @@ for n = 1:total_neurons
             elseif strcmp(dist,'gauss')
                 sigma = s_lambda/4;
                 dataset_1(n,s,t) = normrnd(s_lambda,sigma); %get response from Gauss
-            elseif strcmp(dist,'binomial')
-                % select randomly between the two gaussian distributions, mean -10 or +20
+            elseif strcmp(dist,'bimodal')
+                % select randomly between the two gaussian distributions
                 if mod(t,2)
                     s_lambda_forTrial = s_lambda-10; %mean peak firing rate will be 20
                 else
-                    s_lambda_forTrial = s_lambda+20; %mean peak firing rate will be 50
+                    s_lambda_forTrial = s_lambda;    %mean peak firing rate will be 30
                 end
                 sigma = 2; %variance for gauss
                 dataset_1(n,s,t) = normrnd(s_lambda_forTrial,sigma); %get response from Gauss
@@ -62,7 +62,7 @@ if strcmp(dist,'poisson')
 elseif strcmp(dist,'gauss')
     dataset_2 = dataset_1;
     save('datasetGauss.mat','dataset_2','lambda_values','dist','max_mean_FR','gauss','sigma','total_neurons','total_trials','total_stim');
-elseif strcmp(dist,'3rd')
+elseif strcmp(dist,'bimodal')
     dataset_3 = dataset_1;
     save('dataset3.mat','dataset_3','lambda_values','dist','max_mean_FR','gauss_mean','gauss_std','sigma','total_neurons','total_trials','total_stim');
 end
